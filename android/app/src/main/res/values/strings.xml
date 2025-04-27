@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">easy-commute</string>
+    <string name="title_activity_main">easy-commute</string>
+    <string name="package_name">easy.commute</string>
+    <string name="custom_url_scheme">easy.commute</string>
+</resources>

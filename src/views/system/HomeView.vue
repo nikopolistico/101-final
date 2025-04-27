@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useDisplay } from 'vuetify'
+import backgroundVideo from '@/assets/videos/homeview.mp4'
 
 const { mobile } = useDisplay()
 const drawer = ref(false)
@@ -23,55 +24,9 @@ const closeModal = () => {
     <!-- Background Video -->
     <div class="video-container">
       <video autoplay muted loop class="background-video">
-        <source src="/public/images/homeview.mp4" type="video/mp4" />
+        <source :src="backgroundVideo" type="video/mp4" />
       </video>
     </div>
-
-    <!-- Header Section -->
-    <v-app-bar app flat class="transparent-navbar">
-      <v-container class="d-flex align-center">
-        <!-- Logo -->
-        <v-app-bar-title class="logo">
-          Easy Commute
-        </v-app-bar-title>
-
-        <!-- Navigation -->
-        <v-spacer></v-spacer>
-        <!-- Desktop Navigation -->
-        <nav v-if="!mobile">
-          <router-link to="#" class="nav-link">Home</router-link>
-          <router-link to="/routes" class="nav-link">Ride</router-link>
-          <router-link to="/fare" class="nav-link">Fare</router-link>
-          <router-link to="/contact" class="nav-link">Contact Us</router-link>
-          <router-link to="/profile" class="nav-link">Profile</router-link>
-        </nav>
-        <!-- Mobile Navigation Toggle -->
-        <v-btn icon v-if="mobile" @click="drawer = !drawer">
-          <v-icon color="white">mdi-menu</v-icon>
-        </v-btn>
-      </v-container>
-    </v-app-bar>
-
-    <!-- Drawer for Mobile Navigation -->
-    <v-navigation-drawer v-model="drawer" temporary class="mobile-drawer">
-      <v-list>
-        <v-list-item>
-          <router-link to="#" class="nav-link">Home</router-link>
-        </v-list-item>
-        <v-list-item>
-          <router-link to="/routes" class="nav-link">Ride</router-link>
-        </v-list-item>
-        <v-list-item>
-          <router-link to="/fare" class="nav-link">Fare</router-link>
-        </v-list-item>
-        <v-list-item>
-          <router-link to="/contact" class="nav-link">Contact Us</router-link>
-        </v-list-item>
-        <v-list-item>
-          <router-link to="/profile" class="nav-link">Profile</router-link>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
 
     <!-- First Row (Content above video) -->
     <div class="overlay">
@@ -82,7 +37,7 @@ const closeModal = () => {
       </RouterLink>
     </div>
 
-    <RouterView />
+ 
   </v-app>
 </template>
 
@@ -168,73 +123,6 @@ const closeModal = () => {
   box-shadow: 0 8px 15px rgba(0, 255, 128, 0.6);
 }
 
-/* Navbar Styles */
-.transparent-navbar {
-  background-color: transparent;
-}
-
-.nav-link {
-  color: white;
-  text-decoration: none;
-  margin-right: 50px;
-  font-weight: 400;
-  transition: opacity 0.3s ease;
-  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva,
-    Verdana, sans-serif;
-}
-
-.nav-link:hover {
-  opacity: 0.8;
-}
-
-.white-text-custom {
-  color: white !important;
-}
-/* Mobile Responsiveness */
-@media (max-width: 600px) {
-  .main-title {
-    font-size: 3rem;
-  }
-
-  .subtitle {
-    font-size: 1.2rem;
-  }
-
-  .contact-button {
-    font-size: 1rem;
-    padding: 8px 15px;
-  }
-
-  .overlay {
-    left: 5%;
-    width: 90%;
-  }
-
-  .nav-link {
-    margin-right: 20px;
-  }
-
-  /* Navigation drawer */
-  .v-navigation-drawer {
-    width: 250px;
-    background-color: black;
-  }
-
-  .v-list-item {
-    padding: 16px 0;
-  }
-
-  .v-list-item a {
-    font-size: 1.1rem;
-    padding: 8px 16px;
-    color: #007bb5;
-  }
-
-  .v-list-item a:hover {
-    color: #00bfff;
-  }
-}
-
 /* Additional Media Queries for Tablets and Larger Devices */
 @media (max-width: 768px) {
   .main-title {
@@ -243,11 +131,6 @@ const closeModal = () => {
 
   .subtitle {
     font-size: 1.5rem;
-  }
-
-  .nav-link {
-    font-size: 1.1rem;
-    margin-right: 25px;
   }
 }
 

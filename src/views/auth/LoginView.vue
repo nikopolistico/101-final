@@ -2,6 +2,7 @@
 import { RouterView } from 'vue-router'
 import { ref, computed } from 'vue'
 import { useDisplay } from 'vuetify'
+import register from '@/assets/videos/register.mp4'
 
 const { xsOnly } = useDisplay()
 const isMobile = computed(() => xsOnly.value)
@@ -12,7 +13,7 @@ const isMobile = computed(() => xsOnly.value)
     <!-- Background Video -->
     <div class="video-container">
       <video autoplay muted loop class="background-video">
-        <source src="/public/images/register.mp4" type="video/mp4" />
+        <source :src="register" type="video/mp4" />
       </video>
     </div>
 

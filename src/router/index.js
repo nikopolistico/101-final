@@ -2,11 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router';
 import LoginView from '@/views/auth/LoginView.vue';
 import HomeView from '@/views/system/HomeView.vue';
 import FareView from '@/views/system/FareView.vue';
-import ContactView from '@/views/system/ContactView.vue';
+import AboutView from '@/views/system/AboutView.vue';
 import RoutesView from '@/views/system/RoutesView.vue';
-import MulticabView from '@/views/system/MulticabView.vue';
-import TricycleView from '@/views/system/TricycleView.vue';
-import ProfileView from '@/views/system/ProfileView.vue';
+import GuideView from '@/views/system/GuideView.vue'
 import { supabase } from '@/supabaseClient'; // Import your Supabase client
 
 const router = createRouter({
@@ -31,9 +29,9 @@ const router = createRouter({
       meta: { requiresAuth: true, isDefault: true },
     },
     {
-      path: '/contact',
-      name: 'contact',
-      component: ContactView,
+      path: '/about',
+      name: 'about',
+      component: AboutView,
       meta: { requiresAuth: true, isDefault: true },
     },
     {
@@ -43,25 +41,13 @@ const router = createRouter({
       meta: { requiresAuth: true, isDefault: true },
     },
     {
-      path: '/multicab',
-      name: 'multicab',
-      component: MulticabView,
-      meta: { requiresAuth: true, isDefault: true },
-    },
-    {
-      path: '/tricycle',
-      name: 'tricycle',
-      component: TricycleView,
-      meta: { requiresAuth: true, isDefault: true },
-    },
-    {
-      path: '/profile',
-      name: 'profile',
-      component: ProfileView,
+      path: '/guide',
+      name: 'guide',
+      component: GuideView,
       meta: { requiresAuth: true, isDefault: true },
     },
   ],
-});
+})
 
 // Navigation guard
 router.beforeEach(async (to, from, next) => {

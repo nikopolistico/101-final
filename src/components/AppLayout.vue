@@ -4,49 +4,31 @@
     <v-app-bar app flat class="transparent-navbar">
       <v-container class="d-flex align-center">
         <!-- Logo -->
-        <v-app-bar-title class="logo">Easy Commute</v-app-bar-title>
+        <v-app-bar-title class="logo">
+          Easy Commute
+        </v-app-bar-title>
 
         <!-- Navigation -->
         <v-spacer></v-spacer>
+        <!-- Desktop Navigation -->
         <nav v-if="!mobile">
           <router-link to="/home" class="nav-link">Home</router-link>
           <router-link to="/routes" class="nav-link">Ride</router-link>
           <router-link to="/fare" class="nav-link">Fare</router-link>
-          <router-link to="/contact" class="nav-link">Contact Us</router-link>
+          <router-link to="/about" class="nav-link">About Us</router-link>
+          <router-link to="/guide" class="nav-link">Guide To Use</router-link>
         </nav>
-
         <!-- Mobile Navigation Toggle -->
         <v-btn icon v-if="mobile" @click="drawer = !drawer">
           <v-icon color="white">mdi-menu</v-icon>
         </v-btn>
-
-        <!-- Profile Dropdown Menu -->
-        <v-menu v-model="menu" offset-y>
-          <template v-slot:activator="{ props }">
-            <v-btn icon v-bind="props"> 
-              <div v-if="profileImageUrl" class="profile-image-container">
-        <img :src="profileImageUrl" alt="Profile Image" class="profile-image" />
-      </div>
-
-      <div v-else>
-        <v-icon class="avatar-icon">mdi-account</v-icon> <!-- Display a default icon if no image -->
-      </div>
-            </v-btn>  
-          </template>
-
-          <v-list class="dropdown-menu" style="background-color: black;">
-            <v-list-item @click="$router.push('/profile')" class="dropdown-item">
-              <v-list-item-title>Profile</v-list-item-title>
-            </v-list-item>
-            <v-list-item @click="signOut" class="dropdown-item">
-              <v-list-item-title>Logout</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
+        
       </v-container>
+      
     </v-app-bar>
 
-    <!-- Mobile Navigation Drawer -->
+
+    <!-- Drawer for Mobile Navigation -->
     <v-navigation-drawer v-model="drawer" temporary class="mobile-drawer">
       <v-list>
         <v-list-item>
@@ -59,13 +41,14 @@
           <router-link to="/fare" class="nav-link">Fare</router-link>
         </v-list-item>
         <v-list-item>
-          <router-link to="/contact" class="nav-link">Contact Us</router-link>
+          <router-link to="/about" class="nav-link">About Us</router-link>
+        </v-list-item>
+        <v-list-item>
+          <router-link to="/guide" class="nav-link">Guide To Use</router-link>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-
-    <!-- Slot for Child Content -->
-    <slot /> <!-- Add this to render child content like HomeView.vue -->
+     <slot></slot>
   </v-app>
 </template>
 

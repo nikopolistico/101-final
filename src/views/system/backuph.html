@@ -1,13 +1,8 @@
 <template>
-  <div>
-    <div class="video-container">
-      <video autoplay muted loop class="background-video">
-        <source src="/public/images/background.mp4" type="video/mp4" />
-      </video>
-    </div>
-
-    <!-- Routes Section -->
+  <v-app>
+  <!-- Routes Section -->
     <div class="routes-container">
+    </div>  
       <v-col cols="12" class="text-center">
         <h1>ROUTES FOR Tricycle</h1>
       </v-col>
@@ -56,11 +51,12 @@
         <!-- Close Modal Button -->
         <button @click="closeRouteModal" class="close-modal-button">Close Modal</button>
       </div>
-    </div>
   </div>
+  </v-app>
 </template>
 
 <script>
+import backgroundVideo from '@/assets/videos/background.mp4'
 import { supabase } from '../../supabaseClient'
 import L from 'leaflet'; // Import Leaflet
 import 'leaflet-routing-machine'; // Import Leaflet Routing Machine
@@ -73,72 +69,70 @@ export default {
         {
           id: 'Red',
           barangays: [
-            { name: "Holy Redeemer Butuan" },
-            { name: "Obrero Butuan" },
-            { name: "Ambago Butuan" },
-            { name: "Bading Butuan" },
+            { name: "Holy Redeemer ButButuan Cityuan" },
+            { name: "Obrero Butuan City" },
+            { name: "Ambago Butuan City" },
+            { name: "Bading Butuan City" },
             { name: "Agusan Pequeño" },
-            { name: "Pagatpatan Butuan" }
+            { name: "Pagatpatan Butuan City" }
           ]
         },
         {
           id: "White",
           barangays: [
             { name: "Paradise Village Butuan" },
-            { name: "Balangay Shrine" },
-            { name: "Bliss" },
-            { name: "Libertad" },
-            { name: "Bancasi" },
-            { name: "Pinamanculan" },
-            { name: "NIA" },
-            { name: "Chinese Cemetery" },
-            { name: "Dumalagan" },
+            { name: "Balangay Shrine Butuan City" },
+            { name: "Libertad Butuan City" },
+            { name: "Bancasi Butuan City" },
+            { name: "Pinamanculan Butuan City" },
+            { name: "Chinese Cemetery Butuan City" },
+            { name: "Dumalagan Butuan City" },
           ],
         },
         {
           id: "yellow",
           barangays: [
-            { name: "Holy Redeemer" },
-            { name: "Obrero" },
-            { name: "Doongan" },
-            { name: "Ambago" },
-            { name: "Babag" },
-            { name: "Bading" },
-            { name: "Agusan Pequeño" },
-            { name: "Pagatpatan" },
-            { name: "P. Rizal" },
-            { name: "Villa Kananga" },
-            { name: "Imadejas" },
-            { name: "Bayanihan" },
-            { name: "Golden Ribbon" },
-            { name: "Maon" },
-            { name: "Pangabuggan" },
-            { name: "San Vicente" },
-            { name: "Bit-os" }
+            { name: "Holy Redeemer Butuan City" },
+            { name: "Obrero Butuan City" },
+            { name: "Doongan Butuan City" },
+            { name: "Ambago Butuan City" },
+            { name: "Babag Butuan City" },
+            { name: "Bading Butuan City" },
+            { name: "Agusan Pequeño Butuan City" },
+            { name: "Pagatpatan Butuan City" },
+            { name: "P. Rizal Butuan City" },
+            { name: "Villa Kananga Butuan City" },
+            { name: "Imadejas Butuan City" },
+            { name: "Bayanihan Butuan City" },
+            { name: "Golden Ribbon Butuan City" },
+            { name: "Maon Butuan City" },
+            { name: "Pangabuggan Butuan City" },
+            { name: "San Vicente Butuan City" },
+            { name: "Bit-os Butuan City" }
           ],
         },
         {
           id: "Green",
           barangays: [
-            { name: "Langihan" },
-            { name: "Slaughterhouse" },
-            { name: "Doongan Butuan" },
-            { name: "Ambago Butuan" },
-            { name: "Babag Butuan" },
-            { name: "Bading Butuan" },
+            { name: "Langihan Butuan City" },
+            { name: "Slaughterhouse Butuan City" },
+            { name: "Doongan Butuan City" },
+            { name: "Ambago Butuan City" },
+            { name: "Babag Butuan City" },
+            { name: "Bading Butuan City" },
             { name: "Agusan Pequeño" },
-            { name: "Pagatpatan Butuan" },
-            { name: "P. Rizal Butuan" },
-            { name: "Villa Kananga Butuan" },
-            { name: "Imadejas Butuan" },
-            { name: "Bayanihan Butuan" },
-            { name: "Golden Ribbon Butuan" },
-            { name: "Maon Butuan" },
-            { name: "Pangabuggan Butuan" },
-            { name: "Mandacpan Butuan" },
-            { name: "Bit-os Butuan" },
-            { name: "Baan Riverside Butuan" },
-            { name: "Mahogany Butuan" },
+            { name: "Pagatpatan Butuan City" },
+            { name: "P. Rizal ButButuan Cityuan" },
+            { name: "Villa Kananga Butuan City" },
+            { name: "Imadejas Butuan City" },
+            { name: "Bayanihan Butuan City" },
+            { name: "Golden Ribbon Butuan City" },
+            { name: "Maon Butuan City" },
+            { name: "Pangabuggan Butuan City" },
+            { name: "Mandacpan Butuan City" },
+            { name: "Bit-os Butuan City" },
+            { name: "Baan Riverside Butuan City" },
+            { name: "Mahogany Butuan City" },
             { name: "Buhangin Butuan" },
             { name: "Baan Km.3 Butuan" },
             { name: "IRA Homes Butuan" },
@@ -247,58 +241,96 @@ export default {
         this.routeControl = L.Routing.control({
           waypoints: locations,
         }).addTo(this.map);
+
+        const routingContainer = document.querySelector('.leaflet-routing-container');
+        if (routingContainer) {
+            routingContainer.style.width = '200px'; // Adjust the width
+            routingContainer.style.fontSize = '12px'; // Adjust font size
+        }
       }
+
     },
     openRouteModal(route) {
   this.selectedRoute = route;
   this.isModalOpen = true;
-  this.showRoute();  // Corrected: Ensure showRoute is called here
+  this.showRoute();
+  // Corrected: Ensure showRoute is called here
 },
 
 async showRoute() {
   // Ensure the locations array is properly populated with coordinates of the barangays
   const locations = [];
 
-  // Use Promise.all to fetch all coordinates in parallel
-  const promises = this.selectedRoute.barangays.map(async (barangay) => {
+  // Process each barangay one at a time
+  for (const barangay of this.selectedRoute.barangays) {
     try {
       const coords = await this.getCoordinatesFromGeocodingAPI(barangay.name);
-      const latLng = L.latLng(coords.lat, coords.lon);
-      locations.push(latLng);
+      
+      // If coordinates are found, add to the locations
+      if (coords) {
+        const latLng = L.latLng(coords.lat, coords.lon);
+        locations.push(latLng);
+      } else {
+        console.error(`Coordinates not found for barangay: ${barangay.name}`);
+        continue; // Skip to the next barangay if this one fails
+      }
+
+      // Only create the route when you have at least 5 coordinates
+      if (locations.length >= 5 && !this.routeControl) {
+        // Create and add the routing control to the map
+        this.routeControl = L.Routing.control({
+          waypoints: locations,
+          routeWhileDragging: true, // Enable route dragging
+        }).addTo(this.map);
+
+        // Hide route instructions immediately after the route is found
+        this.routeControl.on('routesfound', () => {
+          this.routeControl.getContainer().style.display = 'none';
+        });
+
+        // Break out of the loop once the route control is created
+        break;
+      }
+
     } catch (error) {
-      console.error("Error fetching coordinates for barangay:", barangay.name);
+      console.error(`Error fetching coordinates for barangay: ${barangay.name}`, error);
+      continue; // Continue searching for the next barangay if an error occurs
     }
-  });
+  }
 
-  // Wait for all geocoding requests to finish
-  await Promise.all(promises);
-
-  // Only draw the route if there are at least two locations
-  if (locations.length >= 2 && !this.routeControl) {
-    // Create and add the routing control to the map
-    this.routeControl = L.Routing.control({
-      waypoints: locations,
-      routeWhileDragging: true,  // Enable route dragging
-    }).addTo(this.map);
-
-    // Hide route instructions immediately after the route is found
-    this.routeControl.on('routesfound', () => {
-      this.routeControl.getContainer().style.display = 'none';
-    });
+  // Optional: Check if no valid route was found after processing all barangays
+  if (locations.length < 5) {
+    console.log("Not enough valid coordinates to create a route.");
   }
 },
-
 
     closeRouteModal() {
       this.isModalOpen = false;
       // Reset locations when modal is closed
       this.startingLocation = '';
       this.endLocation = '';
+      this.resetRoute();
       if (this.map) {
         this.map.remove();
         this.map = null;
       }
     },
+
+    resetRoute() {
+  if (this.routeControl) {
+    this.map.removeControl(this.routeControl);  // Remove the route from the map
+    this.routeControl = null;  // Clear the route control reference
+  }
+
+  // Optionally, clear any other markers or data
+  // Example: if you have a markerLayer for other markers
+  if (this.markerLayer) {
+    this.markerLayer.clearLayers();  // Clear any other markers
+  }
+  
+  // Clear the locations array
+  this.locations = [];
+},
 
     async saveRoute(startingLocation, endLocation) {
       try {
@@ -351,7 +383,7 @@ async showRoute() {
           return;
         }
 
-        console.log("Trip saved successfully with route_id:", routeId);
+        alert("Trip saved successfully with route_id:", routeId);
 
       } catch (error) {
         console.error("Error saving route and trip:", error);
@@ -383,7 +415,12 @@ async showRoute() {
 
 <style scoped>
 /* Modal Styles */
-
+@media (max-width: 600px) {
+    .leaflet-routing-container {
+        width: 150px;
+        font-size: 5px;
+    }
+}
 .background-video {
   position: fixed;
   top: 0;
