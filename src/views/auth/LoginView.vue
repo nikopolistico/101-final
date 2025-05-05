@@ -2,7 +2,7 @@
 import { RouterView } from 'vue-router'
 import { ref, computed } from 'vue'
 import { useDisplay } from 'vuetify'
-import register from '@/assets/videos/register.mp4'
+import background from '@/assets/videos/background.mp4'
 
 const { xsOnly } = useDisplay()
 const isMobile = computed(() => xsOnly.value)
@@ -13,7 +13,7 @@ const isMobile = computed(() => xsOnly.value)
     <!-- Background Video -->
     <div class="video-container">
       <video autoplay muted loop class="background-video">
-        <source :src="register" type="video/mp4" />
+        <source :src="background" type="video/mp4" />
       </video>
     </div>
 
@@ -24,12 +24,6 @@ const isMobile = computed(() => xsOnly.value)
         <v-app-bar-title class="logo">
           Easy Commute
         </v-app-bar-title>
-
-        <!-- Navigation -->
-        <v-spacer></v-spacer>
-        <router-link to="/">
-          <button class="ml-3 adjustable-button">Sign in</button>
-        </router-link>
       </v-container>
     </v-app-bar>
     <!-- FORMS -->
@@ -79,7 +73,7 @@ const isMobile = computed(() => xsOnly.value)
                       <span class="ml-2 white--text">Remember me</span>
                     </label>
 
-                    <v-btn color="#98DED9" class="mt-4" block type="submit" rounded>
+                    <v-btn class="mt-4 buttons" block type="submit" rounded>
                       Sign In
                     </v-btn>
                   </v-form>
@@ -139,7 +133,7 @@ const isMobile = computed(() => xsOnly.value)
                       filled
                       class="white-input"
                     ></v-text-field>
-                    <v-btn color="#98DED9" class="mt-4" block type="submit" rounded>
+                    <v-btn class="mt-4 buttons" block type="submit" rounded>
                       Sign Up
                     </v-btn>
                   </v-form>
@@ -198,6 +192,10 @@ const isMobile = computed(() => xsOnly.value)
   color: white !important;
 }
 
+.buttons{
+  color: #F2F6D0;
+  background-color: #FF6000;
+}
 .adjustable-button {
   position: absolute;
   top: var(--button-top, 50%); /* Default to center vertically */
@@ -217,7 +215,7 @@ const isMobile = computed(() => xsOnly.value)
 
 .adjustable-button:hover {
   background: #fff;
-  color: #162938;
+  color: #B5FCCD;
 }
 
 .adjustable-button:disabled {
@@ -304,12 +302,12 @@ const isMobile = computed(() => xsOnly.value)
 
 /* White text for forms */
 .white-input .v-input__control {
-  color: white !important;
+  color: #FFFDF6 !important;
 }
 
 /* Ensure all text is white */
 .white--text {
-  color: white !important;
+  color: #FFFDF6 !important;
 }
 
 .custom-checkbox {

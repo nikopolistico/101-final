@@ -1,7 +1,6 @@
 <script setup>
 import { ref } from 'vue'
 import { useDisplay } from 'vuetify'
-import backgroundVideo from '@/assets/videos/background.mp4'
 import tricycle from '@/assets/images/tricyclefare.png'
 import multicabfare from '@/assets/images/multicabfare.jpg'
 
@@ -23,13 +22,6 @@ const closeModal = () => {
 
 <template>
   <v-app>
-    <!-- Background Video -->
-    <div class="video-container">
-      <video autoplay muted loop class="background-video">
-        <source :src="backgroundVideo" type="video/mp4" />
-      </video>
-    </div>
-
     <!-- Images Overlay -->
     <div class="image-container-1">
       <img
@@ -88,26 +80,6 @@ const closeModal = () => {
   }
 }
 
-/* Background Video */
-.background-video {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  object-fit: cover;
-  z-index: -1;
-}
-
-/* Video Container */
-.video-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
 
 .white-text-custom {
   color: white !important;

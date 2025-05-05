@@ -1,12 +1,12 @@
 // supabaseClient.js
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = 'https://rspzvoxmyelrubpklulw.supabase.co'
+const supabaseUrl = 'https://ntmuznsceqhiytbmfmox.supabase.co'
 const supabaseAnonKey =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJzcHp2b3hteWVscnVicGtsdWx3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE0ODIwOTMsImV4cCI6MjA0NzA1ODA5M30.s37C_K6r8p7NktjLKGVKj7vRD-kvVKtyE_qbAYOpZuw'
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im50bXV6bnNjZXFoaXl0Ym1mbW94Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY0MTM3MDAsImV4cCI6MjA2MTk4OTcwMH0.pG__6FJgAMHsJITtwkLKIeeginEGeT6TUxv8Vq3dYvg'
 const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
-// Success Notification
+// Success Notification 
 function successNotification(message, seconds = 0) {
   document.querySelector('.alert-success').classList.remove('d-none')
   document.querySelector('.alert-success').classList.add('d-block')

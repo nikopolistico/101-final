@@ -1,12 +1,4 @@
 <template>
-  <AppLayout>
-    <!-- Background Video -->
-    <div class="video-container">
-      <video autoplay muted loop class="background-video">
-        <source :src="backgroundVideo" type="video/mp4" />
-      </video>
-    </div>
-
     <!-- Foreground Content -->
     <div class="content-wrapper">
       <!-- Title and Intro -->
@@ -25,37 +17,12 @@
         </ol>
       </div>
     </div>
-  </AppLayout>
 </template>
 
 <script setup>
-import backgroundVideo from '@/assets/videos/background.mp4'
-import { ref } from 'vue'
-import AppLayout from '@/components/AppLayout.vue'
-import { supabase } from '../../supabaseClient'
 </script>
 
 <style scoped>
-/* Background Video */
-.background-video {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: -1;
-  min-height: 100vh;
-}
-
-.video-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
 
 /* Transparent Foreground Content */
 .content-wrapper {

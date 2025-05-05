@@ -1,7 +1,6 @@
 <script setup>
 import { ref } from 'vue'
 import { useDisplay } from 'vuetify'
-import backgroundVideo from '@/assets/videos/background.mp4'
 import niko from '@/assets/images/niko.jpg'
 import cyril from '@/assets/images/cyril.jpg'
 import james from '@/assets/images/james.jpg'
@@ -28,12 +27,6 @@ const selected = ref(0)
 
 <template>
   <v-app>
-    <!-- Background Video -->
-    <div class="video-container">
-      <video autoplay muted loop class="background-video">
-        <source :src="backgroundVideo" type="video/mp4" />
-      </video>
-    </div>
 
     <v-container fluid class="fill-height d-flex align-center justify-center">
       <v-row class="ma-0 pa-0" no-gutters>
@@ -82,27 +75,6 @@ const selected = ref(0)
 </template>
 
 <style scoped>
-/* Background Video */
-.background-video {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  object-fit: cover;
-  z-index: -1;
-}
-
-/* Video Container */
-.video-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
 /* Avatar Styles */
 .avatar-border {
   border: 2px solid transparent;

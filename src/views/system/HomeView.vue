@@ -21,12 +21,6 @@ const closeModal = () => {
 
 <template>
   <v-app>
-    <!-- Background Video -->
-    <div class="video-container">
-      <video autoplay muted loop class="background-video">
-        <source :src="backgroundVideo" type="video/mp4" />
-      </video>
-    </div>
 
     <!-- First Row (Content above video) -->
     <div class="overlay">
@@ -42,27 +36,7 @@ const closeModal = () => {
 </template>
 
 <style scoped>
-/* Background Video */
-.background-video {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: -1;
-  min-height: 100vh; /* Ensures the video always covers the screen */
-}
 
-/* Video Container */
-.video-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
 .logo {
   display: flex;
   align-items: center;
