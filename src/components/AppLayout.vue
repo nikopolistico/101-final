@@ -7,7 +7,7 @@
     </div>
 
     <!-- Header Section -->
-    <v-app-bar app flat class="transparent-navbar" v-if="!isAuthRoute">
+    <v-app-bar app flat class="transparent-navbar">
       <v-container class="d-flex align-center">
         <!-- Logo -->
         <v-app-bar-title class="logo">Easy Commute</v-app-bar-title>
@@ -15,186 +15,27 @@
         <!-- Navigation -->
         <v-spacer></v-spacer>
         <nav v-if="!mobile">
-          <router-link to="/home" class="nav-link">Home</router-link>
+          <router-link to="/" class="nav-link">Home</router-link>
           <router-link to="/routes" class="nav-link">Ride</router-link>
           <router-link to="/fare" class="nav-link">Fare</router-link>
           <router-link to="/about" class="nav-link">About Us</router-link>
           <router-link to="/guide" class="nav-link">Guide To Use</router-link>
         </nav>
-
-        <!-- Profile Image Container (Click to open Profile Modal) -->
-        <div class="profile-image-container" @click="openProfileModal">
-          <img :src="profileImageUrl || defaultAvatar" class="profile-image" alt="Profile Image" />
-        </div>
-
-        <!-- Mobile Navigation Toggle -->
-        <v-btn icon v-if="mobile" @click="drawer = !drawer">
-          <v-icon color="white">mdi-menu</v-icon>
-        </v-btn>
       </v-container>
     </v-app-bar>
 
-    <!-- Profile Update Modal -->
-    <v-dialog v-model="profileModal" max-width="400px">
-      <v-card class="profile">
-        <v-card-title class="headline">Profile</v-card-title>
-        <v-card-text>
-          <v-file-input
-            v-model="newProfileImage"
-            label="Choose a new profile image"
-            accept="image/*"
-            @change="onImageChange"
-          ></v-file-input>
-
-          <!-- Show Uploading spinner -->
-          <v-progress-circular
-            v-if="uploading"
-            indeterminate
-            color="primary"
-            size="50"
-            class="mt-3"
-          ></v-progress-circular>
-
-          <!-- Show error if upload failed -->
-          <v-alert v-if="uploadError" type="error" class="mt-3">{{ uploadError }}</v-alert>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn color="primary" @click="uploadImage(newProfileImage)">Update Image</v-btn>
-          <v-btn text @click="profileModal = false">Cancel</v-btn>
-        </v-card-actions>
-
-        <v-divider></v-divider>
-
-        <!-- Logout Option -->
-        <v-card-actions>
-          <v-btn color="red" @click="logoutModal = true">Logout</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <!-- Logout Confirmation Modal -->
-    <v-dialog v-model="logoutModal" max-width="400px">
-      <v-card>
-        <v-card-title class="headline">Logout</v-card-title>
-        <v-card-actions>
-          <v-btn color="primary" @click="signOut">Logout</v-btn>
-          <v-btn text @click="logoutModal = false">Cancel</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
 
     <slot></slot>
   </v-app>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
-import { useRoute } from 'vue-router'; // import useRoute to get the current route
-import { supabase } from '@/supabaseClient.js';
 import { useDisplay } from "vuetify";
-import defaultAvatar from "@/assets/images/avatar.png";
 
 // Mobile view status
 const { mobile } = useDisplay();
-const drawer = ref(false);
-const profileModal = ref(false); // Controls the profile modal visibility
-const logoutModal = ref(false); // Controls the logout modal visibility
-const profileImageUrl = ref(null);  // To store the profile image URL
-const newProfileImage = ref(null); // Holds the new profile image selected by the user
-const uploading = ref(false); // Tracks upload state
-const uploadError = ref(null); // Holds upload errors
-const route = useRoute(); // Get the current route
 
-// Reactive reference for auth check
-const isAuthRoute = ref(false);
 
-// Watch route changes to dynamically set isAuthRoute
-watch(() => route.name, (newRouteName) => {
-  isAuthRoute.value = newRouteName === 'auth';
-}, { immediate: true });
-
-// Handle file input change
-const onImageChange = () => {
-  if (newProfileImage.value) {
-    uploadImage(newProfileImage.value);
-  }
-};
-
-const uploadImage = async (file) => {
-  if (!file) return;
-
-  uploading.value = true;
-  uploadError.value = null;
-
-  try {
-    const fileName = `${Date.now()}-${file.name}`;
-
-    // Step 1: Upload the image to Supabase storage (in the 'profile-pictures' bucket)
-    const { data, error: uploadErrorResult } = await supabase.storage
-      .from('profile-pictures') // Assuming you are using the 'profile-pictures' bucket
-      .upload(fileName, file);
-
-    if (uploadErrorResult) {
-      uploadError.value = 'Error uploading image.';
-      console.error('Upload error:', uploadErrorResult);
-      return;
-    }
-
-    // Step 2: Build the public URL for the uploaded image
-    const filePath = data.path;
-    const baseURL = 'https://ntmuznsceqhiytbmfmox.supabase.co'; // Replace with your Supabase project's URL
-    const publicURL = `${baseURL}/storage/v1/object/public/profile-pictures/${filePath}`;
-
-    // Set the profile image URL to display in the app
-    profileImageUrl.value = publicURL;
-
-    // Step 3: Fetch the authenticated user
-    const { data: user, error: getUserError } = await supabase.auth.getUser();
-
-    if (getUserError) {
-      throw new Error(`Error fetching user: ${getUserError.message}`);
-    }
-
-    // Step 4: Directly update the user's profile image URL in the 'profiles' table
-    const { data: updatedProfile, error: updateError } = await supabase
-      .from('profiles')
-      .upsert({
-        v_id: user.id,  // Directly use the authenticated user's id as v_id
-        profile_image: publicURL,  // Update the profile_image field with the uploaded image URL
-      });
-
-    if (updateError) {
-      throw new Error(`Error updating profile image: ${updateError.message}`);
-    }
-
-    console.log("Profile image updated successfully:", updatedProfile);
-
-    // Step 5: Update the displayed profile image in the app
-    profileImageUrl.value = publicURL;
-
-  } catch (error) {
-    console.error("Error in uploadImage:", error.message);
-    uploadError.value = 'Unexpected error occurred.';
-  } finally {
-    uploading.value = false;
-  }
-};
-
-// Sign-out function
-const signOut = async () => {
-  const { error } = await supabase.auth.signOut();
-  if (error) {
-    console.error("Error signing out:", error.message);
-  } else {
-    console.log("Successfully signed out!");
-    window.location.href = '/';  // Redirect to home or login page
-  }
-};
-
-// Open the profile update modal
-const openProfileModal = () => {
-  profileModal.value = true;
-};
 </script>
 
 

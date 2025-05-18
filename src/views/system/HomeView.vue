@@ -3,7 +3,6 @@ import { ref } from 'vue'
 import { useDisplay } from 'vuetify'
 import backgroundVideo from '@/assets/videos/homeview.mp4'
 
-const { mobile } = useDisplay()
 const drawer = ref(false)
 const zoomedImage = ref(null)
 const showModal = ref(false)
