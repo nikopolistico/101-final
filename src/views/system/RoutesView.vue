@@ -16,38 +16,47 @@
         <div id="map" style="height: 500px;"></div>
       </div>
 
+    </div>
       <!-- Section 2: Route Details -->
       <div class="section-2 ml-5">
-  <div class="info-wrapper">
-    <div class="info-header mt-10">
-      <h2>Barangaypassed</h2>
-    </div>
-    <transition name="fade">
-      <ul v-show="showPassedBarangays">
-        <li class="text-white" v-for="(barangay, index) in passedBarangays" :key="index">
-          {{ barangay }}
-        </li>
-      </ul>
-    </transition>
+          <div class="info-wrapper">
+            <div class="info-header mt-10">
+              <h2>Barangaypassed</h2>
+            </div>
+            <transition name="fade">
+              <ul v-show="showPassedBarangays">
+                <li class="text-white" v-for="(barangay, index) in passedBarangays" :key="index">
+                  {{ barangay }}
+                </li>
+              </ul>
+            </transition>
 
-    <div class="info-header">
-      <h2 class="mt-10">SuggestedRoute</h2>
-    </div>
-    <transition name="fade">
-      <ul>
-        <li class="text-white" v-for="route in suggestedRouteList" :key="route">
-          {{ route }} Route
-        </li>
-      </ul>
-    </transition>
-  </div>
-</div>
+            <div class="info-header">
+              <h2 class="mt-10">SuggestedRoute</h2>
+            </div>
+            <transition name="fade">
+              <ul>
+                <li class="text-white" v-for="route in suggestedRouteList" :key="route">
+                  {{ route }} Route
+                </li>
+              </ul>
+            </transition>
+          </div>
+
+          <div class="info-card mt-5">
+            <h4 class="text-white">Turn-by-Turn Directions</h4>
+            <ul>
+              <li v-for="(instruction, index) in routeInstructions" :key="index" class="text-white">
+                {{ index + 1 }}. {{ instruction }}
+              </li>
+            </ul>
+        </div>
 
 
       <!-- Section 3: Manual Routes List -->
       <div class="section-3">
         <div class="info-card">
-
+          <h2 class="text-white">Click on a route to show it on the map</h2>
           <h3>Tricycle</h3>
           <ul class="two-column-list">
             <li
@@ -81,7 +90,6 @@
   </v-app>
 </template>
 
-
 <script>
 import { ref, onMounted } from "vue";
 import L from "leaflet";
@@ -100,19 +108,21 @@ export default {
     const endLocation = ref("");
     const showPassedBarangays = ref(true);
     const suggestedRouteList = ref([]);
+    const routeInstructions = ref([]);
+
 
     const movingMarker = ref(null);
 
     const routes = [
   { id: "Red", barangays: ["Holy Redeemer", "Obrero", "Ambago", "Bading", "Agusan Pequeño", "Pagatpatan"] },
-  { id: "White", barangays: ["Robinson", "Libertad", "Bancasi", "Dumalagan"] },
-  { id: "Yellow", barangays: ["Holy Redeemer", "Obrero", "Doongan", "Ambago", "Babag", "Bading", "Agusan Pequeño", "Pagatpatan", "P. Rizal", "Villa Kananga", "Imadejas", "Bayanihan", "Golden Ribbon", "Maon", "Pangabuggan", "San Vicente", "Bit-os"] },
+  { id: "White", barangays: ["Robinsons", "Libertad", "Bancasi", "Dumalagan"] },
+  { id: "Yellow", barangays: ["Holy Redeemer", "Obrero", "Doongan", "Ambago", "Babag", "Bading", "Agusan Pequeño", "Pagatpatan", "P. Rizal", "Villa Kananga"]},
   { id: "Green", barangays: ["Langihan", "Slaughterhouse", "Doongan", "Ambago", "Babag", "Bading", "Agusan Pequeño", "Pagatpatan", "P. Rizal", "Villa Kananga"] },
   { id: "1", barangays: ["Bancasi", "Dumalagan", "Libertad", "Robinsons", "SM", "Diego Silang"] },
   { id: "2", barangays: ["Bancasi", "Dumalagan", "Libertad","Robinsons", "SM", "Gaisano", "Diego Silang"] },
   { id: "4", barangays: ["Bancasi", "Dumalagan",  "Libertad","Robinsons","SM", "Gaisano","J.C Aquino Avenue", "Langihan", "Holy Redeemer", "City Hall"] },
   { id: "7", barangays: ["Taligaman", "Ampayon", "Caraga State University", "Tiniwisan", "Baan", "City Hall", "SM", "Gaisano", "Ampayon", "Antongalon"] },
-  { id: "8", barangays: ["Los Angeles", "Sumilihon", "Taguibo", "Ampayon", "Tiniwisan", "Baan", "City Hall","Langihan Public Market", "Gaisano", "Ampayon", "Taguibo"] },
+  { id: "8", barangays: ["Los Angeles", "Sumilihon", "Taguibo", "Ampayon", "Tiniwisan", "Baan", "City Hall","Langihan Public Market", "Gaisano", "Ampayon", "Taguibo", "Caraga State University"] },
   { id: "10", barangays: ["Dumalagan", "Baan", "Baan Km. 3", "Tiniwisan", "Ampayon", "Robinsons", "SM", "Gaisano"] },
   { id: "12", barangays: ["Amparo", "Bit-os", "Gaisano", "San Vicente", "Montilla Blvd.", "Holy Redeemer", "City Hall", "Mandacpan"] },
   { id: "14", barangays: ["Ampayon", "Tiniwisan","Lemon", "Pigdaulan", "Mahay", "San Vicente", "SM", "Gaisano", "Robinsons"] },
@@ -145,42 +155,48 @@ const isNumeric = (value) => {
       return barangay.includes(input) || input.includes(barangay);
     };
 
-    // Draw red polyline for selected barangay route
     const polygonroutes = async (routeId) => {
-      const route = routes.find((r) => r.id === routeId);
-      if (!route) return;
+  const route = routes.find((r) => r.id === routeId);
+  if (!route) return;
 
-      if (selectedRouteLayer.value) {
-        map.value.removeLayer(selectedRouteLayer.value);
-        selectedRouteLayer.value = null;
-      }
+  try {
+    const coordsPromises = route.barangays.map((b) =>
+      getCoordinatesFromGeocodingAPI(b)
+    );
+    const coords = await Promise.all(coordsPromises);
 
-      try {
-        const coordsPromises = route.barangays.map((b) =>
-          getCoordinatesFromGeocodingAPI(b)
-        );
-        const coords = await Promise.all(coordsPromises);
+    // Remove existing manual route
+    if (map.value._manualRoutingControl) {
+      map.value.removeControl(map.value._manualRoutingControl);
+      map.value._manualRoutingControl = null;
+    }
 
-        selectedRouteLayer.value = L.polyline(coords, {
-          color: "red",
-          weight: 2,
-          opacity: 0.7,
-        }).addTo(map.value);
+    // Create routing control with no UI box
+    const routingControl = L.Routing.control({
+      waypoints: coords,
+      lineOptions: {
+        styles: [{ color: "red", weight: 2, opacity: 0.9 }],
+      },
+      createMarker: () => null,
+      addWaypoints: false,
+      draggableWaypoints: false,
+      routeWhileDragging: false,
+      fitSelectedRoutes: true,
+      show: false, // ❌ disables default instruction box
+    }).addTo(map.value);
 
-        if (bestRouteLayer.value) {
-          const group = L.featureGroup([
-            bestRouteLayer.value,
-            selectedRouteLayer.value,
-          ]);
-          map.value.fitBounds(group.getBounds());
-        } else {
-          map.value.fitBounds(selectedRouteLayer.value.getBounds());
-        }
-      } catch (error) {
-        console.error("Error drawing selected route:", error);
-        alert("Failed to draw the selected route.");
-      }
-    };
+    // 🧽 Remove the routing container from DOM just in case
+    const container = document.querySelector('.leaflet-routing-container');
+    if (container) container.remove();
+
+    map.value._manualRoutingControl = routingControl;
+  } catch (error) {
+    console.error("Error routing selected route:", error);
+    alert("Failed to draw the selected route.");
+  }
+};
+
+
 
     // Reverse geocode to find barangays along best route
     const reverseGeocode = async (lat, lon) => {
@@ -217,9 +233,7 @@ const isNumeric = (value) => {
       }
     };
 
-    // Find and draw best route in green, with improved matching logic
- // Find and draw best route in green, with improved matching logic
-const findRoute = async () => {
+    const findRoute = async () => {
   if (!startLocation.value || !endLocation.value) {
     alert("Please enter both start and end locations.");
     return;
@@ -242,13 +256,14 @@ const findRoute = async () => {
     const routingControl = L.Routing.control({
       waypoints: [startCoords, endCoords],
       lineOptions: {
-        styles: [{ color: "green", weight: 1, opacity: 0.9 }],
+        styles: [{ color: "#0118D8", weight: 2, opacity: 0.9 }],
       },
       createMarker: () => null,
       addWaypoints: false,
       draggableWaypoints: false,
       routeWhileDragging: false,
       fitSelectedRoutes: false,
+      show: false, // ❌ Hides default UI
     });
 
     routingControl.addTo(map.value);
@@ -257,17 +272,22 @@ const findRoute = async () => {
     routingControl.on("routesfound", async (e) => {
       const route = e.routes[0];
 
+      // ✂️ REMOVE leaflet-routing-container from map
+      const container = document.querySelector('.leaflet-routing-container');
+      if (container) container.remove();
+
+      // Draw green route line
       if (bestRouteLayer.value) {
         map.value.removeLayer(bestRouteLayer.value);
       }
 
       bestRouteLayer.value = L.polyline(route.coordinates, {
-        color: "green",
-        weight: 1,
+        color: "#0118D8",
+        weight: 2,
         opacity: 0.9,
       }).addTo(map.value);
 
-      // Create emoji icon
+      // Emoji marker
       const emojiIcon = L.divIcon({
         className: 'emoji-marker',
         html: '🚖',
@@ -277,10 +297,8 @@ const findRoute = async () => {
 
       movingMarker.value = L.marker(route.coordinates[0], { icon: emojiIcon }).addTo(map.value);
 
-      // Animate marker along route
       let currentIndex = 0;
-      const speed = 100; // ms
-
+      const speed = 100;
       function moveMarker() {
         if (currentIndex < route.coordinates.length) {
           movingMarker.value.setLatLng(route.coordinates[currentIndex]);
@@ -288,15 +306,15 @@ const findRoute = async () => {
           setTimeout(moveMarker, speed);
         }
       }
-
       moveMarker();
 
+      // Barangays along route
       await passedBarangaysUpdate(route.coordinates);
 
+      // Suggested Routes Matching
       const start = startLocation.value.trim().toLowerCase();
       const end = endLocation.value.trim().toLowerCase();
 
-      // Match all routes, not just the first one
       let matchedRoutes = [];
       for (const r of routes) {
         const barangaysLower = r.barangays.map((b) => b.trim().toLowerCase());
@@ -307,22 +325,34 @@ const findRoute = async () => {
         }
       }
 
-      // Set the list of matched routes and readable summary string
       suggestedRouteList.value = matchedRoutes;
       suggestedRoute.value = matchedRoutes.length
         ? `${matchedRoutes.join(", ")} Route${matchedRoutes.length > 1 ? 's' : ''}`
         : "No specific route matched";
 
+      // Fit view
       if (selectedRouteLayer.value) {
-        const group = L.featureGroup([
-          bestRouteLayer.value,
-          selectedRouteLayer.value,
-        ]);
+        const group = L.featureGroup([bestRouteLayer.value, selectedRouteLayer.value]);
         map.value.fitBounds(group.getBounds());
       } else {
         map.value.fitBounds(bestRouteLayer.value.getBounds());
       }
 
+      // 📋 Store directions in Section 3 only
+      routeInstructions.value = [];
+      if (route.instructions?.length) {
+        route.instructions.forEach(i => {
+          routeInstructions.value.push(`${i.text} — ${i.distance.toFixed(0)} m`);
+        });
+      } else if (route.legs?.length > 0) {
+        route.legs[0].steps.forEach(step => {
+          if (step.instruction) {
+            routeInstructions.value.push(`${step.instruction} — ${step.distance.toFixed(0)} m`);
+          }
+        });
+      }
+
+      // Clean up
       routingControl.remove();
       map.value._routingControl = null;
     });
@@ -331,6 +361,7 @@ const findRoute = async () => {
     alert("Error finding route.");
   }
 };
+
 
 
     onMounted(() => {
@@ -352,6 +383,7 @@ const findRoute = async () => {
       showPassedBarangays,
       suggestedRouteList,
       isNumeric,
+      routeInstructions,
     };
   },
 };
@@ -379,16 +411,23 @@ const findRoute = async () => {
 
 .section-1 {
   flex: 9;
-  max-width: 90%;
+  max-width: 80%;
   overflow-y: auto;
   min-width: 300px;
 }
 
 .section-2 {
-  margin-top: 100px;
-  flex: 1;
-  max-width: 10%;
-  min-width: 100px;
+  position: fixed;
+  top: 100px;
+  right: 220px;
+  width: 300px;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 10000;
 }
 
 /* Section 3 pinned to far right */
@@ -482,7 +521,7 @@ const findRoute = async () => {
 .section-2 .info-card {
   margin: 20px 0;
   max-width: 100%;
-  text-align: left;
+  text-align: center;
   padding: 10px 8px;
   line-height: 1.4;
   font-size: 13px;
@@ -508,6 +547,7 @@ const findRoute = async () => {
   font-size: 12px;
   padding: 10px 0;
   color: #F5F5DC;
+  text-align: center
 }
 
 
@@ -568,14 +608,7 @@ const findRoute = async () => {
   }
 
   .section-1,
-  .section-2 {
-    max-width: 100% !important;
-    flex: 1 1 100% !important;
-    min-width: auto;
-    overflow-y: visible;
-    margin-bottom: 20px;
-  }
-
+  .section-2,
   .section-3 {
     position: relative !important;
     top: auto !important;
@@ -587,6 +620,14 @@ const findRoute = async () => {
     background: transparent !important;
     box-shadow: none !important;
     padding: 0 !important;
+  }
+
+  .section-2 .info-card,
+  .section-3 .info-card {
+    padding: 10px !important;
+    background: rgba(0, 0, 0, 0.7) !important;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   }
 }
 
@@ -627,6 +668,5 @@ const findRoute = async () => {
     padding: 8px;
   }
 }
-
 
 </style>
