@@ -558,6 +558,7 @@ const isNumeric = (value) => {
 }
 
 .info-card li {
+  text-align: center;
   font-size: 14px;
   padding: 4px 0;
 }
