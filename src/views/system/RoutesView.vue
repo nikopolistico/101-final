@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <div class="routes-container">
+      <!-- Section 1: Search & Map -->
       <div class="section-1">
         <v-col cols="12" class="text-left mt-10 text-white">
           <h1>🚖Find Your Route</h1>
@@ -15,65 +16,71 @@
         <div id="map" style="height: 500px;"></div>
       </div>
 
-      <div class="section-2 ml-10 mt-15">
-        <transition name="fade">
-          <div v-if="passedBarangays.length" class="info-card">
-            <div class="info-header" @click="togglePassedBarangays">
-              <h2>Barangays You Will Pass Through:</h2>
-            </div>
-            <ul v-show="showPassedBarangays">
-              <li v-for="(barangay, index) in passedBarangays" :key="index">
-                {{ barangay }}
-              </li>
-            </ul>
-          </div>
-        </transition>
+      <!-- Section 2: Route Details -->
+      <div class="section-2 ml-5">
+  <div class="info-wrapper">
+    <div class="info-header mt-10">
+      <h2>Barangaypassed</h2>
+    </div>
+    <transition name="fade">
+      <ul v-show="showPassedBarangays">
+        <li class="text-white" v-for="(barangay, index) in passedBarangays" :key="index">
+          {{ barangay }}
+        </li>
+      </ul>
+    </transition>
 
-        <transition name="fade">
-          <div v-if="suggestedRoute" class="info-card">
-            <div class="info-header" @click="toggleSuggestedRoute">
-              <h2>Sakay ka sa:</h2>
-            </div>
-            <p v-show="showSuggestedRoute">{{ suggestedRoute }}</p>
-          </div>
-        </transition>
-      </div>
-
-      <div class="section-3">
-  <div class="info-card">
-
-    <h3>Tricycle</h3>
-    <ul class="two-column-list">
-      <li
-        v-for="route in routes.filter(r => !isNumeric(r.id))"
-        :key="route.id"
-        @click="polygonroutes(route.id)"
-        style="cursor: pointer; user-select: none;"
-        title="Click to show route on map"
-      >
-        {{ route.id }}
-      </li>
-    </ul>
-
-    <h3>Multicab</h3>
-    <ul class="two-column-list">
-      <li
-        v-for="route in routes.filter(r => isNumeric(r.id))"
-        :key="route.id"
-        @click="polygonroutes(route.id)"
-        style="cursor: pointer; user-select: none;"
-        title="Click to show route on map"
-      >
-        {{ route.id }}
-      </li>
-    </ul>
-
+    <div class="info-header">
+      <h2 class="mt-10">SuggestedRoute</h2>
+    </div>
+    <transition name="fade">
+      <ul>
+        <li class="text-white" v-for="route in suggestedRouteList" :key="route">
+          {{ route }} Route
+        </li>
+      </ul>
+    </transition>
   </div>
 </div>
+
+
+      <!-- Section 3: Manual Routes List -->
+      <div class="section-3">
+        <div class="info-card">
+
+          <h3>Tricycle</h3>
+          <ul class="two-column-list">
+            <li
+              v-for="route in routes.filter(r => !isNumeric(r.id))"
+              :key="route.id"
+              @click="polygonroutes(route.id)"
+              style="cursor: pointer; user-select: none;"
+              title="Click to show route on map"
+            >
+              {{ route.id }}
+            </li>
+          </ul>
+
+          <h3 class="mt-2">Multicab</h3>
+          <ul class="two-column-list">
+            <li
+              v-for="route in routes.filter(r => isNumeric(r.id))"
+              :key="route.id"
+              @click="polygonroutes(route.id)"
+              style="cursor: pointer; user-select: none;"
+              title="Click to show route on map"
+            >
+              {{ route.id }}
+            </li>
+          </ul>
+
+        </div>
+      </div>
 
     </div>
   </v-app>
 </template>
+
 
 <script>
 import { ref, onMounted } from "vue";
@@ -92,26 +99,22 @@ export default {
     const startLocation = ref("");
     const endLocation = ref("");
     const showPassedBarangays = ref(true);
-    const showSuggestedRoute = ref(true);
+    const suggestedRouteList = ref([]);
 
     const movingMarker = ref(null);
-
-    
-
 
     const routes = [
   { id: "Red", barangays: ["Holy Redeemer", "Obrero", "Ambago", "Bading", "Agusan Pequeño", "Pagatpatan"] },
   { id: "White", barangays: ["Robinson", "Libertad", "Bancasi", "Dumalagan"] },
   { id: "Yellow", barangays: ["Holy Redeemer", "Obrero", "Doongan", "Ambago", "Babag", "Bading", "Agusan Pequeño", "Pagatpatan", "P. Rizal", "Villa Kananga", "Imadejas", "Bayanihan", "Golden Ribbon", "Maon", "Pangabuggan", "San Vicente", "Bit-os"] },
   { id: "Green", barangays: ["Langihan", "Slaughterhouse", "Doongan", "Ambago", "Babag", "Bading", "Agusan Pequeño", "Pagatpatan", "P. Rizal", "Villa Kananga"] },
-  { id: "1", barangays: ["Bancasi", "Dumalagan", "Libertad", "Robinsons", "SM", "Durano", "Diego Silang"] },
+  { id: "1", barangays: ["Bancasi", "Dumalagan", "Libertad", "Robinsons", "SM", "Diego Silang"] },
   { id: "2", barangays: ["Bancasi", "Dumalagan", "Libertad","Robinsons", "SM", "Gaisano", "Diego Silang"] },
   { id: "4", barangays: ["Bancasi", "Dumalagan",  "Libertad","Robinsons","SM", "Gaisano","J.C Aquino Avenue", "Langihan", "Holy Redeemer", "City Hall"] },
-  { id: "7", barangays: ["Taligaman", "Ampayon", "Caraga State University", "Tiniwisan", "Baan", "City Hall", "SM", "Baan Km. 3", "Ampayon", "Antongalon"] },
-  { id: "8", barangays: ["Los Angeles", "Sumilihon", "Taguibo", "Ampayon", "Tiniwisan", "Baan", "City Hall","Langihan Public Market", "Baan Km. 3", "Ampayon", "Taguibo"] },
-  { id: "10", barangays: ["Dumalagan", "Baan", "Baan Km. 3", "Tiniwisan", "Ampayon", "Robinsons"] },
+  { id: "7", barangays: ["Taligaman", "Ampayon", "Caraga State University", "Tiniwisan", "Baan", "City Hall", "SM", "Gaisano", "Ampayon", "Antongalon"] },
+  { id: "8", barangays: ["Los Angeles", "Sumilihon", "Taguibo", "Ampayon", "Tiniwisan", "Baan", "City Hall","Langihan Public Market", "Gaisano", "Ampayon", "Taguibo"] },
+  { id: "10", barangays: ["Dumalagan", "Baan", "Baan Km. 3", "Tiniwisan", "Ampayon", "Robinsons", "SM", "Gaisano"] },
   { id: "12", barangays: ["Amparo", "Bit-os", "Gaisano", "San Vicente", "Montilla Blvd.", "Holy Redeemer", "City Hall", "Mandacpan"] },
-  { id: "13", barangays: ["Maug", "Mahogany", "Baan", "Obrero", "Langihan Public Market", "City Hall", "Mahogany"] },
   { id: "14", barangays: ["Ampayon", "Tiniwisan","Lemon", "Pigdaulan", "Mahay", "San Vicente", "SM", "Gaisano", "Robinsons"] },
 ];
 
@@ -215,126 +218,120 @@ const isNumeric = (value) => {
     };
 
     // Find and draw best route in green, with improved matching logic
-    const findRoute = async () => {
-      if (!startLocation.value || !endLocation.value) {
-        alert("Please enter both start and end locations.");
-        return;
+ // Find and draw best route in green, with improved matching logic
+const findRoute = async () => {
+  if (!startLocation.value || !endLocation.value) {
+    alert("Please enter both start and end locations.");
+    return;
+  }
+
+  try {
+    const startCoords = await getCoordinatesFromGeocodingAPI(startLocation.value);
+    const endCoords = await getCoordinatesFromGeocodingAPI(endLocation.value);
+
+    if (bestRouteLayer.value) {
+      map.value.removeLayer(bestRouteLayer.value);
+      bestRouteLayer.value = null;
+    }
+
+    if (map.value._routingControl) {
+      map.value.removeControl(map.value._routingControl);
+      map.value._routingControl = null;
+    }
+
+    const routingControl = L.Routing.control({
+      waypoints: [startCoords, endCoords],
+      lineOptions: {
+        styles: [{ color: "green", weight: 1, opacity: 0.9 }],
+      },
+      createMarker: () => null,
+      addWaypoints: false,
+      draggableWaypoints: false,
+      routeWhileDragging: false,
+      fitSelectedRoutes: false,
+    });
+
+    routingControl.addTo(map.value);
+    map.value._routingControl = routingControl;
+
+    routingControl.on("routesfound", async (e) => {
+      const route = e.routes[0];
+
+      if (bestRouteLayer.value) {
+        map.value.removeLayer(bestRouteLayer.value);
       }
-      try {
-        const startCoords = await getCoordinatesFromGeocodingAPI(
-          startLocation.value
-        );
-        const endCoords = await getCoordinatesFromGeocodingAPI(endLocation.value);
 
-        if (bestRouteLayer.value) {
-          map.value.removeLayer(bestRouteLayer.value);
-          bestRouteLayer.value = null;
+      bestRouteLayer.value = L.polyline(route.coordinates, {
+        color: "green",
+        weight: 1,
+        opacity: 0.9,
+      }).addTo(map.value);
+
+      // Create emoji icon
+      const emojiIcon = L.divIcon({
+        className: 'emoji-marker',
+        html: '🚖',
+        iconSize: [40, 40],
+        iconAnchor: [15, 15],
+      });
+
+      movingMarker.value = L.marker(route.coordinates[0], { icon: emojiIcon }).addTo(map.value);
+
+      // Animate marker along route
+      let currentIndex = 0;
+      const speed = 100; // ms
+
+      function moveMarker() {
+        if (currentIndex < route.coordinates.length) {
+          movingMarker.value.setLatLng(route.coordinates[currentIndex]);
+          currentIndex++;
+          setTimeout(moveMarker, speed);
         }
-
-        if (map.value._routingControl) {
-          map.value.removeControl(map.value._routingControl);
-          map.value._routingControl = null;
-        }
-
-        const routingControl = L.Routing.control({
-          waypoints: [startCoords, endCoords],
-          lineOptions: {
-            styles: [{ color: "green", weight: 2, opacity: 0.9 }],
-          },
-          createMarker: () => null,
-          addWaypoints: false,
-          draggableWaypoints: false,
-          routeWhileDragging: false,
-          fitSelectedRoutes: false,
-        });
-
-        routingControl.addTo(map.value);
-        map.value._routingControl = routingControl;
-
-        routingControl.on("routesfound", async (e) => {
-          const route = e.routes[0];
-
-          if (bestRouteLayer.value) {
-            map.value.removeLayer(bestRouteLayer.value);
-          }
-
-          bestRouteLayer.value = L.polyline(route.coordinates, {
-            color: "green",
-            weight: 6,
-            opacity: 0.9,
-          }).addTo(map.value);
-
-          // Create emoji icon
-          const emojiIcon = L.divIcon({
-            className: 'emoji-marker',
-            html: '🚖',
-            iconSize: [30, 30],
-            iconAnchor: [15, 15],
-          });
-
-          movingMarker.value = L.marker(route.coordinates[0], { icon: emojiIcon }).addTo(map.value);
-
-           // Animate marker along route
-          let currentIndex = 0;
-          const speed = 100; // ms
-
-          function moveMarker() {
-            if (currentIndex < route.coordinates.length) {
-              movingMarker.value.setLatLng(route.coordinates[currentIndex]);
-              currentIndex++;
-              setTimeout(moveMarker, speed);
-            }
-          }
-
-          moveMarker();
-
-          await passedBarangaysUpdate(route.coordinates);
-
-          const start = startLocation.value.trim().toLowerCase();
-          const end = endLocation.value.trim().toLowerCase();
-
-          let matchedRoute = null;
-
-          for (const r of routes) {
-            const barangaysLower = r.barangays.map((b) => b.trim().toLowerCase());
-            const startMatch = barangaysLower.some((b) => matches(start, b));
-            const endMatch = barangaysLower.some((b) => matches(end, b));
-            if (startMatch && endMatch) {
-              matchedRoute = r.id;
-              break;
-            }
-          }
-
-          suggestedRoute.value = matchedRoute
-            ? `${matchedRoute} Route`
-            : "No specific route matched";
-
-          if (selectedRouteLayer.value) {
-            const group = L.featureGroup([
-              bestRouteLayer.value,
-              selectedRouteLayer.value,
-            ]);
-            map.value.fitBounds(group.getBounds());
-          } else {
-            map.value.fitBounds(bestRouteLayer.value.getBounds());
-          }
-
-          routingControl.remove();
-          map.value._routingControl = null;
-        });
-      } catch (error) {
-        console.error(error);
-        alert("Error finding route.");
       }
-    };
 
-    const togglePassedBarangays = () => {
-      showPassedBarangays.value = !showPassedBarangays.value;
-    };
+      moveMarker();
 
-    const toggleSuggestedRoute = () => {
-      showSuggestedRoute.value = !showSuggestedRoute.value;
-    };
+      await passedBarangaysUpdate(route.coordinates);
+
+      const start = startLocation.value.trim().toLowerCase();
+      const end = endLocation.value.trim().toLowerCase();
+
+      // Match all routes, not just the first one
+      let matchedRoutes = [];
+      for (const r of routes) {
+        const barangaysLower = r.barangays.map((b) => b.trim().toLowerCase());
+        const startMatch = barangaysLower.some((b) => matches(start, b));
+        const endMatch = barangaysLower.some((b) => matches(end, b));
+        if (startMatch && endMatch) {
+          matchedRoutes.push(r.id);
+        }
+      }
+
+      // Set the list of matched routes and readable summary string
+      suggestedRouteList.value = matchedRoutes;
+      suggestedRoute.value = matchedRoutes.length
+        ? `${matchedRoutes.join(", ")} Route${matchedRoutes.length > 1 ? 's' : ''}`
+        : "No specific route matched";
+
+      if (selectedRouteLayer.value) {
+        const group = L.featureGroup([
+          bestRouteLayer.value,
+          selectedRouteLayer.value,
+        ]);
+        map.value.fitBounds(group.getBounds());
+      } else {
+        map.value.fitBounds(bestRouteLayer.value.getBounds());
+      }
+
+      routingControl.remove();
+      map.value._routingControl = null;
+    });
+  } catch (error) {
+    console.error(error);
+    alert("Error finding route.");
+  }
+};
+
 
     onMounted(() => {
       map.value = L.map("map").setView([8.9492, 125.5435], 13);
@@ -353,9 +350,7 @@ const isNumeric = (value) => {
       passedBarangays,
       suggestedRoute,
       showPassedBarangays,
-      showSuggestedRoute,
-      togglePassedBarangays,
-      toggleSuggestedRoute,
+      suggestedRouteList,
       isNumeric,
     };
   },
@@ -390,6 +385,7 @@ const isNumeric = (value) => {
 }
 
 .section-2 {
+  margin-top: 100px;
   flex: 1;
   max-width: 10%;
   min-width: 100px;
@@ -399,7 +395,7 @@ const isNumeric = (value) => {
 .section-3 {
   position: fixed;
   top: 100px;
-  right: 30px;
+  right: 50px;
   width: 180px;
   max-height: 80vh;
   overflow-y: auto;
@@ -505,13 +501,15 @@ const isNumeric = (value) => {
 }
 
 .info-header {
+  display: block;
+  margin: 0;
+  flex-direction: column;
+  align-items: flex-start;
   font-size: 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
   padding: 10px 0;
+  color: #F5F5DC;
 }
+
 
 .info-card ul {
   list-style: none;
@@ -534,20 +532,16 @@ const isNumeric = (value) => {
 
 /* Transitions */
 .fade-enter-active, .fade-leave-active {
-  transition: opacity 1s ease-in-out;
+  transition: opacity 0.5s ease;
 }
-
 .fade-enter-from, .fade-leave-to {
   opacity: 0;
 }
 
+
 @keyframes fadeIn {
   0% { opacity: 0; transform: translateY(20px); }
   100% { opacity: 1; transform: translateY(0); }
-}
-
-.fade-enter, .fade-leave-to {
-  animation: fadeIn 1.5s ease-out forwards;
 }
 
 /* Two-column list for routes */
