@@ -586,6 +586,7 @@ const isNumeric = (value) => {
 
 /* Two-column list for routes */
 .two-column-list {
+  text-align: center;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px 30px;
