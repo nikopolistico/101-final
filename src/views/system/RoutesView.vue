@@ -36,7 +36,7 @@
             </div>
             <transition name="fade">
               <ul>
-                <li class="text-white text-center" v-for="route in suggestedRouteList" :key="route">
+                <li class="text-white" v-for="route in suggestedRouteList" :key="route">
                   {{ route }} Route
                 </li>
               </ul>
@@ -46,7 +46,7 @@
           <div class="info-card mt-5">
             <h4 class="text-white">Turn-by-Turn Directions</h4>
             <ul>
-              <li class="text-white text-center" v-for="(instruction, index) in routeInstructions" :key="index">
+              <li class="text-white" v-for="(instruction, index) in routeInstructions" :key="index">
                 {{ index + 1 }}. {{ instruction }}
               </li>
             </ul>
